@@ -2,8 +2,6 @@ from datetime import date, datetime
 from typing import Optional
 from pydantic import BaseModel, Field, ConfigDict, EmailStr
 
-from src.database.models import UserRole
-
 
 class ContactModel(BaseModel):
     """

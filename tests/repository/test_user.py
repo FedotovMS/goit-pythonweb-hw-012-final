@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.database.models import User
+from src.entity.models import User
 from src.repository.users import UserRepository
 from src.schemas.user import UserCreate
 

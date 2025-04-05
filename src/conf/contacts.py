@@ -3,7 +3,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.openapi.models import Contact
 
-from src.database.models import User
+from src.entity.models import User
 from src.repository.contacts import ContactRepository
 from src.schemas.contacts import ContactModel
 

@@ -1,12 +1,12 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock
 from fastapi import HTTPException, status
-from src.schemas.user import ContactModel
+from src.schemas.contacts import ContactModel
 
 user_data = {
     "id": 1,
-    "username": "John",
-    "email": "john@gmail.com",
+    "username": "dad",
+    "email": "dad@gmail.com",
     "password": "12345678",
     "role": "user",
     "confirmed": True,
@@ -15,34 +15,34 @@ user_data = {
 contacts = [
     {
         "id": 1,
-        "name": "Ivan",
-        "surname": "Iedi",
-        "birthday": "1990-11-11",
-        "email": "Ivan@example.com",
-        "phone": "067-111-22-33",
-        "created_at": "2025-01-01T00:00:00",
-        "updated_at": "2025-01-01T00:00:00",
+        "name": "Evan",
+        "surname": "Jedi",
+        "birthday": "2002-02-02",
+        "email": "evan@example.com",
+        "phone": "111-222-3333",
+        "created_at": "2024-01-01T00:00:00",
+        "updated_at": "2024-01-01T00:00:00",
         "info": "Test contact.",
     },
     {
         "id": 2,
-        "name": "Kate",
-        "surname": "Wo",
-        "birthday": "2004-04-08",
-        "email": "kate@example.com",
-        "phone": "067-222-33-44",
-        "created_at": "2025-01-01T00:00:00",
-        "updated_at": "2025-01-01T00:00:00",
+        "name": "Mia",
+        "surname": "Jedi",
+        "birthday": "2004-04-04",
+        "email": "mia@example.com",
+        "phone": "111-333-5555",
+        "created_at": "2024-01-01T00:00:00",
+        "updated_at": "2024-01-01T00:00:00",
         "info": None,
     },
 ]
 
 payload = {
-    "name": "Ivan",
-    "surname": "Ivanov",
-    "birthday": "1990-11-11",
-    "email": "Ivan@example.com",
-    "phone": "067-111-22-33",
+    "name": "Evan",
+    "surname": "Jedi",
+    "birthday": "2002-02-02",
+    "email": "evan@example.com",
+    "phone": "111-222-3333",
 }
 
 
@@ -56,7 +56,7 @@ async def test_get_upcoming_birthdays(client, monkeypatch, auth_headers):
 
     mock_get_upcoming_birthdays = AsyncMock(return_value=contacts)
     monkeypatch.setattr(
-        "src.services.contacts.ContactService.get_upcoming_birthdays",
+        "src.conf.contacts.ContactService.get_upcoming_birthdays",
         mock_get_upcoming_birthdays,
     )
 
@@ -77,7 +77,7 @@ async def test_get_upcoming_birthdays_unauthenticated(client, monkeypatch):
         )
     )
     monkeypatch.setattr(
-        "src.services.auth_service.get_current_user", mock_get_current_user
+        "src.services.auth.get_current_user", mock_get_current_user
     )
 
     response = client.get("/api/contacts/birthdays?days=7")
@@ -96,7 +96,7 @@ async def test_get_contacts_no_filters(client, monkeypatch, auth_headers):
 
     mock_get_contacts = AsyncMock(return_value=contacts)
     monkeypatch.setattr(
-        "src.services.contacts.ContactService.get_contacts", mock_get_contacts
+        "src.conf.contacts.ContactService.get_contacts", mock_get_contacts
     )
 
     response = client.get("/api/contacts/", headers=auth_headers)
@@ -117,7 +117,7 @@ async def test_get_contacts_with_filters(client, monkeypatch, auth_headers):
     filtered_contacts = [contacts[0]]
     mock_get_contacts = AsyncMock(return_value=filtered_contacts)
     monkeypatch.setattr(
-        "src.services.contacts.ContactService.get_contacts", mock_get_contacts
+        "src.conf.contacts.ContactService.get_contacts", mock_get_contacts
     )
 
     response = client.get("/api/contacts/?name=Ivan&surname=Jedi", headers=auth_headers)
@@ -138,18 +138,18 @@ async def test_get_contacts_pagination(client, monkeypatch, auth_headers):
     paginated_contacts = [
         {
             "id": 3,
-            "name": "Rinta",
-            "surname": "Bo",
-            "email": "rinta@example.com",
-            "phone": "067-333-44-55",
-            "birthday": "2010-10-10",
-            "created_at": "2025-01-01T00:00:00",
-            "updated_at": "2025-01-01T00:00:00",
+            "name": "Inna",
+            "surname": "Jedi",
+            "email": "inna@example.com",
+            "phone": "777-555-1111",
+            "birthday": "2006-06-06",
+            "created_at": "2024-01-01T00:00:00",
+            "updated_at": "2024-01-01T00:00:00",
         }
     ]
     mock_get_contacts = AsyncMock(return_value=paginated_contacts)
     monkeypatch.setattr(
-        "src.services.contacts.ContactService.get_contacts", mock_get_contacts
+        "src.conf.contacts.ContactService.get_contacts", mock_get_contacts
     )
 
     response = client.get("/api/contacts/?skip=2&limit=1", headers=auth_headers)
@@ -187,7 +187,7 @@ async def test_get_contact_success(client, monkeypatch, auth_headers):
     contact = contacts[0]
     mock_get_contact = AsyncMock(return_value=contact)
     monkeypatch.setattr(
-        "src.services.contacts.ContactService.get_contact", mock_get_contact
+        "src.conf.contacts.ContactService.get_contact", mock_get_contact
     )
 
     response = client.get("/api/contacts/1", headers=auth_headers)
@@ -207,7 +207,7 @@ async def test_get_contact_not_found(client, monkeypatch, auth_headers):
 
     mock_get_contact = AsyncMock(return_value=None)
     monkeypatch.setattr(
-        "src.services.contacts.ContactService.get_contact", mock_get_contact
+        "src.conf.contacts.ContactService.get_contact", mock_get_contact
     )
 
     response = client.get("/api/contacts/777", headers=auth_headers)
@@ -244,7 +244,7 @@ async def test_create_contact_success(client, monkeypatch, auth_headers):
     new_contact = contacts[0]
     mock_create_contact = AsyncMock(return_value=new_contact)
     monkeypatch.setattr(
-        "src.services.contacts.ContactService.create_contact",
+        "src.conf.contacts.ContactService.create_contact",
         mock_create_contact,
     )
 
@@ -301,20 +301,20 @@ async def test_update_contact_success(client, monkeypatch, auth_headers):
 
     updated_contact = {
         **contacts[0],
-        "name": "UpdatedIvan",
-        "surname": "UpdatedIvanov",
+        "name": "UpdatedEvan",
+        "surname": "UpdatedJedi",
     }
     mock_update_contact = AsyncMock(return_value=updated_contact)
     monkeypatch.setattr(
-        "src.services.contacts.ContactService.update_contact",
+        "src.conf.contacts.ContactService.update_contact",
         mock_update_contact,
     )
 
     payload = {
-        "name": "UpdatedIvan",
-        "surname": "UpdatedIvanov",
+        "name": "UpdatedEvan",
+        "surname": "UpdatedJedi",
         "birthday": "2002-02-02",
-        "email": "Ivan@example.com",
+        "email": "evan@example.com",
         "phone": "111-222-3333",
     }
 
@@ -342,14 +342,14 @@ async def test_update_contact_not_found(client, monkeypatch, auth_headers):
 
     mock_update_contact = AsyncMock(return_value=None)
     monkeypatch.setattr(
-        "src.services.contacts.ContactService.update_contact",
+        "src.conf.contacts.ContactService.update_contact",
         mock_update_contact,
     )
 
     payload = {
         "name": "NonExistent",
         "surname": "Contact",
-        "birthday": "2001-01-01",
+        "birthday": "2002-02-02",
         "email": "nonexistent@example.com",
         "phone": "777-777-7777",
     }
@@ -406,7 +406,7 @@ async def test_delete_contact_success(client, monkeypatch, auth_headers):
 
     mock_delete_contact = AsyncMock(return_value=contacts[0])
     monkeypatch.setattr(
-        "src.services.contacts.ContactService.remove_contact",
+        "src.conf.contacts.ContactService.remove_contact",
         mock_delete_contact,
     )
 
@@ -429,7 +429,7 @@ async def test_delete_contact_not_found(client, monkeypatch, auth_headers):
 
     mock_delete_contact = AsyncMock(return_value=None)
     monkeypatch.setattr(
-        "src.services.contacts.ContactService.remove_contact",
+        "src.conf.contacts.ContactService.remove_contact",
         mock_delete_contact,
     )
 

@@ -3,11 +3,13 @@ import pytest
 from unittest.mock import AsyncMock, MagicMock
 from fastapi import HTTPException, status
 
+from src.services.auth import get_current_user
+
 
 user_data_admin = {
     "id": 1,
-    "username": "admin",
-    "email": "admin@gmail.com",
+    "username": "dad",
+    "email": "dad@gmail.com",
     "password": "12345678",
     "role": "admin",
     "confirmed": True,
@@ -16,8 +18,8 @@ user_data_admin = {
 
 user_data_not_admin = {
     "id": 1,
-    "username": "admin",
-    "email": "admin@gmail.com",
+    "username": "dad",
+    "email": "dad@gmail.com",
     "password": "12345678",
     "role": "user",
     "confirmed": True,
@@ -26,20 +28,21 @@ user_data_not_admin = {
 
 
 @pytest.mark.asyncio
-async def test_me(client, monkeypatch, auth_headers):
-    mock_jwt_decode = MagicMock(return_value={"sub": user_data_admin["username"]})
-    monkeypatch.setattr("src.services.auth.jwt.decode", mock_jwt_decode)
+async def test_me(client, auth_headers):
+    async def override_get_current_user():
+        return user_data_admin
 
-    mock_get_user_from_db = AsyncMock(return_value=user_data_admin)
-    monkeypatch.setattr("src.services.auth.get_user_from_db", mock_get_user_from_db)
+    from main import app  
+
+    app.dependency_overrides[get_current_user] = override_get_current_user
 
     response = client.get("/api/users/me", headers=auth_headers)
 
     assert response.status_code == 200
     assert response.json()["email"] == user_data_admin["email"]
     assert response.json()["username"] == user_data_admin["username"]
-    mock_jwt_decode.assert_called_once()
-    mock_get_user_from_db.assert_called_once_with(user_data_admin["username"], mock.ANY)
+
+    app.dependency_overrides.clear()
 
 
 @pytest.mark.asyncio

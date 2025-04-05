@@ -7,7 +7,7 @@ from httpx import AsyncClient
 from sqlalchemy.pool import StaticPool
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from main import app
-from src.database.models import Base, User, Contact
+from src.entity.models import Base, User, Contact
 from src.database.db import get_db
 from src.schemas.contacts import ContactModel
 from src.services.auth import create_access_token, Hash
@@ -62,11 +62,11 @@ def user():
 def contact(user: User):
     return Contact(
         id=1,
-        name="Evan",
-        surname="Jedi",
-        email="evan@example.com",
-        phone="111-222-3333",
-        birthday="2002-02-02",
+        name="Ivan",
+        surname="Ivanov",
+        email="ivan@example.com",
+        phone="067-111-22-33",
+        birthday="1990-11-11",
         user=user,
     )
 
@@ -79,11 +79,11 @@ def contact_none():
 @pytest.fixture
 def contact_body():
     return ContactModel(
-        name="Evan",
-        surname="Jedi",
-        email="evan@example.com",
-        phone="111-222-3333",
-        birthday="2002-02-02",
+        name="Ivan",
+        surname="Ivanov",
+        email="ivan@example.com",
+        phone="067-111-22-33",
+        birthday="1990-11-11",
     )
 
 

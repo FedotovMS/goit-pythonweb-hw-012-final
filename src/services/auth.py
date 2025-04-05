@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from jose import JWTError, jwt
 
 from src.database.db import get_db
-from src.database.models import User, UserRole
+from src.entity.models import User, UserRole
 from src.conf.config import settings
 from src.services.users import UserService
 

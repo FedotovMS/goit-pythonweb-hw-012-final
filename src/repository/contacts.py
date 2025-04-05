@@ -3,7 +3,7 @@ from typing import List
 from sqlalchemy import select, func, and_, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database.models import Contact, User
+from src.entity.models import Contact, User
 from src.schemas.contacts import ContactModel
 
 
