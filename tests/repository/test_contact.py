@@ -26,10 +26,10 @@ def user():
 def contact(user: User):
     return Contact(
         id=1,
-        name="Evan",
-        surname="Jedi",
-        email="evan@example.com",
-        phone="111-222-3333",
+        name="Charlie",
+        surname="Smith",
+        email="charlie.smith@example.com",
+        phone="123-456-7890",
         birthday="2002-02-02",
         user=user,
     )
@@ -43,11 +43,11 @@ def contact_none():
 @pytest.fixture
 def contact_body():
     return ContactModel(
-        name="Evan",
-        surname="Jedi",
-        email="evan@example.com",
-        phone="111-222-3333",
-        birthday="2002-02-02",
+        name="Charlie",
+        surname="Smith",
+        email="charlie.smith@example.com",
+        phone="123-456-7890",
+        birthday="1990-03-15",
     )
 
 
@@ -67,7 +67,7 @@ async def test_get_contacts(contact_repository, mock_session, user, contact):
     )
 
     assert len(contacts) == 1
-    assert contacts[0].name == "Evan"
+    assert contacts[0].name == "Charlie"
 
 
 @pytest.mark.asyncio
@@ -80,7 +80,7 @@ async def test_get_contact_by_id(contact_repository, mock_session, user, contact
 
     assert contact_record is not None
     assert contact_record.id == 1
-    assert contact_record.name == "Evan"
+    assert contact_record.name == "Charlie"
 
 
 @pytest.mark.asyncio
@@ -90,7 +90,7 @@ async def test_create_contact_successful(
     result = await contact_repository.create_contact(body=contact_body, user=user)
 
     assert isinstance(result, Contact)
-    assert result.name == "Evan"
+    assert result.name == "Charlie"
     mock_session.add.assert_called_once()
     mock_session.commit.assert_awaited_once()
     mock_session.refresh.assert_awaited_once_with(result)
@@ -103,7 +103,7 @@ async def test_create_contact_failure(
     result = await contact_repository.create_contact(body=contact_body, user=user)
 
     assert isinstance(result, Contact)
-    assert result.name != "Evan2"
+    assert result.name != "Charlie2"
     mock_session.add.assert_called_once()
     mock_session.commit.assert_awaited_once()
     mock_session.refresh.assert_awaited_once_with(result)
@@ -112,7 +112,7 @@ async def test_create_contact_failure(
 @pytest.mark.asyncio
 async def test_update_contact(contact_repository, mock_session, user, contact):
     contact_data = ContactModel(**contact.__dict__)
-    contact_data.name = "Evan2"
+    contact_data.name = "Charlie2"
     mock_result = MagicMock()
     mock_result.scalar_one_or_none.return_value = contact
     mock_session.execute = AsyncMock(return_value=mock_result)
@@ -122,7 +122,7 @@ async def test_update_contact(contact_repository, mock_session, user, contact):
     )
 
     assert result is not None
-    assert result.name == "Evan2"
+    assert result.name == "Charlie2"
     mock_session.commit.assert_awaited_once()
     mock_session.refresh.assert_awaited_once_with(contact)
 
@@ -136,7 +136,7 @@ async def test_remove_contact(contact_repository, mock_session, user, contact):
     result = await contact_repository.remove_contact(contact_id=1, user=user)
 
     assert result is not None
-    assert result.name == "Evan"
+    assert result.name == "Charlie"
     mock_session.delete.assert_awaited_once_with(contact)
     mock_session.commit.assert_awaited_once()
 
