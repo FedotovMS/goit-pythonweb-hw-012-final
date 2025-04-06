@@ -25,30 +25,30 @@ TestingSessionLocal = async_sessionmaker(
 )
 
 test_user = {
-    "username": "mom",
-    "email": "mom@gmail.com",
-    "password": "12345678",
-    "role": "user",
+    "username": "alex",
+    "email": "alex@gmail.com",
+    "password": "newpassword123",
+    "role": "admin",
 }
 
 user_data = {
-    "username": "dad",
-    "email": "dad@gmail.com",
-    "password": "12345678",
+    "username": "john",
+    "email": "john@gmail.com",
+    "password": "johnpassword123",
     "role": "user",
 }
 
 user_data_unique_email = {
-    "username": "dad",
-    "email": "dady@gmail.com",
-    "password": "12345678",
+    "username": "mike",
+    "email": "mike_unique@gmail.com",
+    "password": "mikepassword123",
     "role": "user",
 }
 
 user_data_unique = {
-    "username": "dady",
-    "email": "dady@gmail.com",
-    "password": "12345678",
+    "username": "anna",
+    "email": "anna_unique@gmail.com",
+    "password": "annapassword123",
     "role": "user",
 }
 
