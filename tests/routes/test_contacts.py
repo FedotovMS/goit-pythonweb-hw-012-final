@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import AsyncMock
-from fastapi import HTTPException, status
+
 from src.schemas.contacts import ContactModel
 from main import app
 from src.services.auth import get_current_user
